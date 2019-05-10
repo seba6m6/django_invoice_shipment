@@ -14,8 +14,8 @@ You can easily implement it by hosting on platform like pythonanywhere.com or fo
 
 #### 1. create an virtual env
 #### 2. install the required packages from requirememnts.txt `` pip install -r requirments.txt ``
-##### This app is using a package called WeasyPrint, it enables us to generate a pdf from our invoice template.In order to use it on your machine you will need to install some pre-required packages on your computer (in case you are on Windows machine it might be a bit tricky) Please check out this documentation to see what you have to do step by step https://weasyprint.readthedocs.io/en/stable/index.html 
+ This app is using a package called WeasyPrint, it enables us to generate a pdf from our invoice template.In order to use it on your machine you will need to install some pre-required packages on your computer (in case you are on Windows machine it might be a bit tricky) Please check out this documentation to see what you have to do step by step https://weasyprint.readthedocs.io/en/stable/index.html 
 #### 3. Please create standard settings.py file and add the modules that we installed in the step 2 to our INSTALLED_APPS
 #### 4. You can do a standard ``python manage.py makemigrations `` and ``python manage.py migrate`` to make sure that all of the tables in our db got created, you can also create a superuser by ``python manage.py createsuperuser`` so that you can access admin page
 
-## Feel free to contact me by email batianm@outlook.com. I already apologize in advance if i won't be able to respond to you in a timely manner.
+#### Feel free to contact me by email batianm@outlook.com. I already apologize in advance if i won't be able to respond to you in a timely manner.
