@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card-sm-12">
+            {% if shipphoto.照片photo %}<img class="card-img-top img-responsive img-rounded" src="{{ shipphoto.照片photo.url }}">{% endif %}
+            <div class="card-body">
+                <ul class="list-group">
+                    <li id="notlong" class="list-group-item list-group-item-dark" style="font-size:14px;">Order/订单 :&emsp;{{ shipphoto.订单order}}</li>
+                    <li class="list-group-item list-group-item-info">Date/日期:&emsp;<b>{{ shipphoto.date }}</b></li>
+                    <li class="list-group-item list-group-item-info">Updated/最近更新 :&emsp;<b>{{ shipphoto.update }}</b></li>
+                    <li class="list-group-item list-group-item-info">Quantity/数量:&emsp;<b>{{ shipphoto.数量quantity }}</b></li>
+                    <li class="list-group-item list-group-item-info">Shipping list/发货明细:&emsp;{% if shipphoto.发货名细xlsx  %}<b><a href="{{ shipphoto.发货名细xlsx.url }}">Shipping list&emsp;</a></b>{% endif %}</li>
+                    <li class="list-group-item list-group-item-info">发票invoice:&emsp;{% if shipphoto.发票invoice  %}<b><a href="{{ shipphoto.发票invoice.url }}">invoice&emsp;</a></b>{% endif %}</li>
+                    <li class="list-group-item list-group-item-info">运单号tracking:&emsp;<b>{{ shipphoto.运单号tracking }}</b></li>
+                    <li  class="list-group-item list-group-item-info">Car plates/车牌 :&emsp;<b>{{ shipphoto.车牌carplates }}</b></li>
+                    <li class="list-group-item list-group-item-info">User/上传用户:&emsp;<b>{{ shipphoto.user_name}}</b></li>
+                </ul>
+                    <a href="{% url 'photo:update_ship_photo' shipphoto.id %}">
+                        <button class="btn btn-primary btn-lg">
+                            <span class="fas fa-edit"></span>
+                        </button>
+                    </a>
+            {% if user.is_superuser %}
+                    <form id="ship-photo-delete" action="{% url 'photo:delete_ship_photo' shipphoto.id %}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ shipphoto.id }}"/>
+                    <button class="btn btn-danger btn-lg" onClick="deleteFunction()">
+                        <span class="fas fa-trash-alt"></span>
+                    </button>
+                    </form>
+                {% endif %}
+            </div>
+            <script>
+                // function deleteFunction(e) {
+                //     if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                //             e.preventDefault();
+                //     }else{
+                //         $('#photo-delete').submit();
+                //     }
+                // }
+                function deleteFunction(e) {
+                    if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                        $('#ship-photo-delete').submit();}
+                        else{}
+
+                }
+            </script>
+            <script>
+                var myLi = $('#notlong');
+                myLi.text(myLi.text().substring(0,70))
+            </script>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="aler alert-danger">
+        <p> 亲，你不能删除此图片，请叫 {{ obj.user_name }} 帮你删除</p>
+        <p> You cannot delete this picture, Please contact {{ obj.user_name }} to do it</p>
+    </div>
+
+{% endblock %}

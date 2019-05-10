@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{%  block content %}
+{% load static %}
+{% load staticfiles %}
+
+<a href="{% url 'generate_shipment_pdf' shipment.id %}"><button class="btn btn-primary">生成PDF</button></a>
+{% if user.is_superuser %}<a href="{% url 'ship_items_update' shipment.id %}"><button class="btn btn-warning">编辑</button></a>{%  endif %}
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0" class="table-responsive">
+        <tr class="top">
+            <td colspan="9">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <p class="logo-background">Huanglong Electronics Co. Ltd.</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: end">
+                            Created: {{ shipment.date }}<br>
+                            Receipt: {% if shipment.shipping_pdf %}<a href={{ shipment.shipping_pdf.url }}> Tracking No.</a>{% endif %}<br>
+                            Invoice: {% if shipment.invoice %}<a href={{ shipment.invoice.url }}> Invoice File</a>{% endif %}<br>
+                            Packaging list: {% if shipment.packing %}<a href={{ shipment.packing.url }}> Packaging list</a>{% endif %}<br>
+                            Number of boxes: {% if shipment.box %}<b>{{ shipment.box }}</b></p>{% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <th class="header" colspan="9"><h3>{{ shipment.shipping_no}}</h3></th>
+        <tr class="heading">
+            <td>Item</td>
+            <td>Chinese name</td>
+            <td>ERP no.</td>
+            <td>From Invoice</td>
+            <td>Quantity</td>
+            <td>Unit Price</td>
+            <td>Unit Price EUR</td>
+            <td>Total Price</td>
+            <td>Total Price EUR</td>
+        </tr>
+
+        {% for s in shipment.invoiceitemtoship_set.all %}
+        <tr class="item">
+            <td>{{ s.invoice_item.product.product_name }}</td>
+            <td>{{ s.invoice_item.product.product_name_chinese }}</td>
+            <td>{{ s.invoice_item.product.ERP_number }}</td>
+            <td>{{ s.invoice_item.invoice }}</td>
+            <td>{{ s.quantity }}</td>
+            <td>{{ s.invoice_item.product.price_pol }}</td>
+            <td>{% if s.invoice_item.product.price_pol_eur %}{{ s.invoice_item.product.price_pol_eur }}{% endif %}</td>
+            <td>{{ s.total }}</td>
+            <td>{{ s.total_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td><td></td>
+            <td><b>Total USD: </b></td>
+            <td>
+               ${{ shipment.total }}
+            </td>
+        </tr>
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td><td></td>
+            <td></td>
+            <td><b>Total EUR: </b></td>
+            <td>
+               €{{ shipment.total_eur }}
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}

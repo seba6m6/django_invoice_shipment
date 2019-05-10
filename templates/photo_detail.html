@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load group_tags %}
+{% block content %}
+{% if not request.user|has_group:"Polska" %}
+<div class="container-fluid">
+    <div class="row">
+            <div class="col-md-6">
+                <figure class="figure">
+                    <img class="figure-img img-fluid rounded" src="{{ photo.照片photo.url }}">
+                    <ul class="list-group">
+                        <li id="photo_name" class="list-group-item list-group-item-dark">Name/名称:&emsp;<b>{{ photo.名称photo_name }}</b></li>
+                        <li class="list-group-item list-group-item-info">Date/日期:&emsp;<b>{{ photo.date }}</b></li>
+                        <li class="list-group-item list-group-item-info">Quantity/数量:&emsp;<b>{{ photo.数量quantity }}</b></li>
+                        <li class="list-group-item list-group-item-info">Condition/状态:&emsp;<b>{{ photo.状态condition }}</b></li>
+                        <li class="list-group-item list-group-item-info">Place/放的地方:&emsp;<b>{{ photo.地方place}}</b></li>
+                        <li class="list-group-item list-group-item-info">User/上传用户:&emsp;<b>{{ photo.user_name}}</b></li>
+                    </ul>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'photo:update_photo' photo.id %}">
+                            <button class="btn btn-primary btn-lg">
+                                <span class="fas fa-edit"></span>
+                            </button>
+                        </a>
+                        <form id="photo-delete" action="{% url 'photo:delete_photo' photo.id  %}" method="post" style="display: inline">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ photo.id }}"/>
+                        <button class="btn btn-danger btn-lg" onClick="deleteFunction()">
+                            <span class="fas fa-trash-alt"></span>
+                        </button>
+                    {% endif %}
+                    </form>
+                    <script>
+                        // function deleteFunction(e) {
+                        //     if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                        //             e.preventDefault();
+                        //     }else{
+                        //         $('#photo-delete').submit();
+                        //     }
+                        // }
+                        function deleteFunction(e) {
+                            if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                                $('#photo-delete').submit();}
+                                else{}
+
+                        }
+                    </script>
+
+
+                </figure>
+            </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

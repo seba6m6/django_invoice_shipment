@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        .invoice-box{
+            font-size: 11px;
+        }
+        .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:nth-child(3) {
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 30px;
+            line-height: 32px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.item td{
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .rtl table {
+            text-align: right;
+        }
+
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+        .header {
+            text-align: center;
+        }
+        .logo-background{
+            background-color: #bbbbbb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="7">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <p class="logo-background">Huanglong Electronics Co. Ltd.</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: end">
+                            Invoice #: {{ number }}<br>
+                            Created: {{date }}<br>
+                            Due: 30 days<br>
+                            Title: {{ title }}<br>{% if commercial %}
+                            Country of origin : People's Republic of China<br>
+                            INCOTERMS ：EXW {% endif %}
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="information">
+            <td colspan="7">
+                <table>
+                    <tr>
+                        <td>
+                            Dongguan City Huanglong Electronics Co. Ltd. <br>
+                            Building No. 4, Jingsheng Street<br>
+                            Niushan Foreign Economic Industrial Park<br>
+                            Dongcheng District, Dongguan City<br>
+                            Front desk tel.：0769-28337752<br>
+                            Postal code : 523000<br>
+                            Agricultural Bank of China<br>
+                            EUR: 44274838040000020 <br>
+                            USD: 44274814040000229<br>
+                            The Agricultural Bank of China<br>
+                            Guangdong Dongguan (sub)-branch
+
+
+
+                        </td>
+                        <td></td>
+                        <td></td>
+
+                        <td style="text-align: end;">
+                            Zortrax S.A.<br>
+                            ul. Lubelska 34<br>
+                            10-409 Olsztyn<br>
+                            Poland<br>
+                            NIP: PL7393864289<br>
+                            ING Bank Śląski S. A. PL50105017641000009030284286<br>
+                            SWIFT: INGBPLPW
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <th class="header" colspan="7"><h3>{{ number }}</h3></th>
+        <tr class="heading">
+            <td>Item</td>
+            <td>ERP no.</td>
+            <td>Quantity</td>
+            <td>Unit Price</td>
+            <td>Unit Price EUR</td>
+            <td>Total Price</td>
+            <td>Total Price EUR</td>
+        </tr>
+        {% for product in items %}
+        <tr class="item">
+            <td>{{ product.product.product_name }}</td>
+            <td>{{ product.product.ERP_number }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>{{ product.product.price_pol }}</td>
+            <td>{% if product.product.price_pol_eur %}{{ product.product.price_pol_eur }}{% endif %}</td>
+            <td>{{ product.items_total }}</td>
+            <td>{{ product.items_total_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total USD: </b></td>
+            <td>
+               ${{ total }}
+            </td>
+        </tr>
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total EUR: </b></td>
+            <td>
+               €{{ total_eur }}
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

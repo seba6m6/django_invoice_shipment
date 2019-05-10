@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4 offset-sm-4">
+            <form class="form-inline md-form form-sm" method="GET" action="">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="搜索货品 Znajdź część" name="q" value="{{ request.GET.q }}"/>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <hr/>
+    <div class='row'>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Image</th>
+                  <th scope="col">Product name</th>
+                  <th scope="col">Chinese name</th>
+                  <th scope="col">ERP number</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Used in</th>
+                  <th scope="col">{% if user.is_superuser %}Original quotation{% endif %}</th>
+                  <th scope="col">{% if user.is_superuser %}Price (cost RMB){% endif %}</th>
+                  <th scope="col">Price (USD)</th>
+                  <th scope="col">Price (EUR)</th>
+                  <th scope="col">MOQ</th>
+                  <th scope="col">Specs</th>
+                  <th scope="col">{% if user.is_superuser %}Specs (CHN){% endif %}</th>
+                  <th scope="col">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                  {% for product in objects %}
+                <tr>
+                  <th scope="row">{{product.0}}</th>
+                  <td>{% if product.1.photo %}<img class="img img-fluid rounded" width="200" height="136" src="{{ product.1.photo.url }}">{% endif %}</td>
+                  <td>{% if user.is_superuser %}<a href= "{% url 'photo:update_product' product.1.id %}">{%endif%}{{product.1.product_name}}</a></td>
+                  <td>{% if product.1.product_name_chinese %}{{product.1.product_name_chinese}}{% endif %}</td>
+                  <td>{% if product.1.ERP_number %}{{ product.1.ERP_number }}{% endif %}</td>
+                  <td>{{product.1.category}}</td>
+                  <td>{% if product.1.used_in %}{{product.1.used_in}}{% endif %}</td>
+                  <td>{% if user.is_superuser %}{% if product.1.original_quote %}<a href="{{product.1.original_quote.url}}">Quote</a>{% endif %}{% endif %}</td>
+                  <td>{% if user.is_superuser %}{{product.1.price}}{% endif %}</td>
+                  <td>{{product.1.price_pol}}</td>
+                  <td>{{product.1.price_pol_eur}}</td>
+                  <td>{% if product.1.moq %}{{product.1.moq}}{% endif %}</td>
+                  <td>{% if product.1.specification %}<a href="{{product.1.specification.url}}">Specs</a>{% endif %}</td>
+                  <td>{% if user.is_superuser %}{% if product.1.translated_spec %}<a href="{{product.1.translated_spec.url}}">Specs</a>{% endif %}{% endif %}</td>
+                  <td>{% if product.1.link %}<a href="{{product.1.link}}">link</a>{% endif %}</td>
+                </tr>
+                 {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <div class="col-sm-4 offset-sm-4" align="center">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if objects.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ objects.number }} of {{ objects.paginator.num_pages }}.
+                    </span>
+
+                    {% if objects.has_next %}
+                        <a href="?page={{ objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                        <a href="?page={{ objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+{% endblock content %}

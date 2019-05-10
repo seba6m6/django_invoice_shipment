@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load group_tags %}
+{% block content %}
+{% if not request.user|has_group:"Polska" %}
+<div class="row">
+    <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card-sm-12">
+            <img class="card-img-top img-responsive img-rounded" src="{{ shipphoto.照片photo.url }}">
+            <div class="card-body">
+                <ul class="list-group">
+                    <li id="photo_name" class="list-group-item list-group-item-dark">Name/名称:&emsp;<b>{{ product.product_name }}</b></li>
+                    <li class="list-group-item list-group-item-info">Date/日期:&emsp;<b>{{ product.date }}</b></li>
+                    <li class="list-group-item list-group-item-info">Link:&emsp;<b>{{ product.link }}</b></li>
+                    <li class="list-group-item list-group-item-info">Production_costs:&emsp;<b>{{ product.production_costs }}</b></li>
+                    <li class="list-group-item list-group-item-info">Price:&emsp;<b>{{ product.price}}</b></li>
+                </ul>
+                {% if user.is_superuser %}
+                    <a href="{% url 'photo:update_ship_photo' shipphoto.id %}">
+                        <button class="btn btn-primary btn-lg">
+                            <span class="fas fa-edit"></span>
+                        </button>
+                    </a>
+                    <form id="ship-photo-delete" action="{% url 'photo:delete_ship_photo' shipphoto.id %}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ shipphoto.id }}"/>
+                    <button class="btn btn-danger btn-lg" onClick="deleteFunction()">
+                        <span class="fas fa-trash-alt"></span>
+                    </button>
+                    </form>
+                {% endif %}
+            </div>
+            <script>
+                // function deleteFunction(e) {
+                //     if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                //             e.preventDefault();
+                //     }else{
+                //         $('#photo-delete').submit();
+                //     }
+                // }
+                function deleteFunction(e) {
+                    if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                        $('#ship-photo-delete').submit();}
+                        else{}
+
+                }
+            </script>
+            <script>
+                var myLi = $('#notlong');
+                myLi.text(myLi.text().substring(0,70))
+            </script>
+
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4 offset-sm-4">
+            <form class="form-inline md-form form-sm" method="GET" action="">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="搜索货品 Znajdź wyslana część" name="q" value="{{ request.GET.q }}"/>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <hr/>
+    <div class='row'>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Product name</th>
+                  <th scope="col">Chinese name</th>
+                  <th scope="col">ERP number</th>
+                  <th scope="col">Invoice no.</th>
+                  <th scope="col">Shipping no.</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Total quantity</th>
+                  {% if not sent %}<th scope="col">Quantity left</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                  {% for item in objects %}
+                <tr {% if sent %} class="paid"{% endif %}>
+                  <td>{% if item.product.product_name %}{{item.product.product_name}}{% endif %}</td>
+                  <td>{% if item.product.product_name_chinese %}{{item.product.product_name_chinese}}{% endif %}</td>
+                  <td>{% if item.product.ERP_number %}{{ item.product.ERP_number }}{% endif %}</td>
+                  <td>{% if item.invoice.invoice_no %}{{ item.invoice.invoice_no }}{% endif %}</td>
+                  <td>
+                      {% for item in item.invoiceitemtoship_set.all %}
+                          <a href="{% url 'shipment_detail' item.shipment.id %} "<p>{{ item.shipment.shipping_no }}</p>
+                      {% endfor %}
+                  </td>
+                  <td>
+                      {% for item in item.invoiceitemtoship_set.all %}
+                          <p>{{ item.shipment.date }}</p>
+                      {% endfor %}
+                  </td>
+                  <td>{{ item.quantity }}</td>
+                  {% if item.quantity_left %}<td {% if not item.sent %}class="unpaid" {% endif %}>{% if item.quantity_left %}{{ item.quantity_left }}{% endif %}</td>{% endif %}
+
+                </tr>
+                 {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <div class="col-sm-4 offset-sm-4" align="center">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if objects.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ objects.number }} of {{ objects.paginator.num_pages }}.
+                    </span>
+
+                    {% if objects.has_next %}
+                        <a href="?page={{ objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                        <a href="?page={{ objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+{% endblock content %}

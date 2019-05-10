@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load group_tags %}
+{% block content %}
+    {% if not request.user|has_group:"Polska" %}
+        <div class="row">
+            <dic class="offset-md-4 col-md-4">
+                <h4 class="mt-4">最近收到的包裹</h4>
+            <hr/>
+        </div>
+        <br/>
+        <div class="row">
+            {% for photos in recent_photos %}
+                <div class="col-md-4">
+                    <figure class="figure">
+                        <img  class="figure-img img-fluid rounded" src="{{ photos.照片photo.url }}">
+                        <ul class="list-group">
+                            <li id="photo_name" class="list-group-item list-group-item-dark">{{ photos.名称photo_name }}</li>
+                            <li class="list-group-item list-group-item-primary"><b>{{ photos.date }}</b></li>
+                            <p><a href="{% url 'photo:photo_detail' photos.id %}" class="btn btn-primary" role="button">细节/Details</a></p>
+                        </ul>
+                    </figure>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}

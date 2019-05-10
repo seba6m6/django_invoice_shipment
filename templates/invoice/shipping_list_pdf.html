@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+        .invoice-box{
+            font-size: 11px;
+        }
+        .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:nth-child(3)
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 30px;
+            line-height: 32px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 10px;
+        }
+
+        .invoice-box table tr.item td{
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .rtl table {
+            text-align: right;
+        }
+
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+        .header {
+            text-align: center;
+        }
+        .logo-background{
+            background-color: #bbbbbb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="9">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <p class="logo-background">Huanglong Electronics Co. Ltd.</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: end">
+                            Created: {{ date }}<br>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <p  style="width: 100%">Shipping list</p>
+        <th class="header" colspan="9"><h3>{{ number}}</h3></th>
+        <tr class="heading">
+            <td>Item</td>
+            <td>Chinese name</td>
+            <td>ERP no.</td>
+            <td>From Invoice</td>
+            <td>Quantity</td>
+            <td>Unit Price</td>
+            <td>Unit Price EUR</td>
+            <td>Total Price</td>
+            <td>Total Price EUR</td>
+        </tr>
+
+        {% for s in items %}
+        <tr class="item">
+            <td>{{ s.invoice_item.product.product_name }}</td>
+            <td>{{ s.invoice_item.product.product_name_chinese }}</td>
+            <td>{{ s.invoice_item.product.ERP_number }}</td>
+            <td>{{ s.invoice_item.invoice }}</td>
+            <td>{{ s.quantity }}</td>
+            <td>{{ s.invoice_item.product.price_pol }}</td>
+            <td>{% if s.invoice_item.product.price_pol_eur %}{{ s.invoice_item.product.price_pol_eur }}{% endif %}</td>
+            <td>{{ s.total }}</td>
+            <td>{{ s.total_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td><td></td>
+            <td><b>Total USD: </b></td>
+            <td>
+               ${{ total }}
+            </td>
+        </tr>
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td><td></td>
+            <td></td>
+            <td><b>Total EUR: </b></td>
+            <td>
+               €{{ total_eur }}
+            </td>
+        </tr>
+    </table>
+</div>
+</body>

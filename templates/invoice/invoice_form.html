@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load group_tags %}
+
+{% block content %}
+    <form id="myForm" method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        {{ invoiceitems.management_form }}
+        <table>
+            <tbody>
+                {% for form in invoiceitems.forms %}
+                    <tr>
+                        <td> {{ form.id }}</td>
+                        <td>{{ form.product }}</td>
+                        <td>{{ form.quantity }}</td>
+                        {{ form.quantity_left }}
+                        {{ form.sent }}
+                        {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Submit</button>
+
+
+    </form>
+    <!-- create_normal.html :: part 4 -->
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load group_tags %}
+
+{% block content %}
+    <form id="myForm" method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        {{ invoiceitemstoship.management_form }}
+        <table>
+            <tbody>
+                <div class="alrert">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% for form in invoiceitemstoship.forms %}
+                    <tr>
+                        <td> {{ form.id }}</td>
+                        <td>{{ form.invoice_item }}</td>
+                        <td>{{ form.quantity }}</td>
+                        {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Submit</button>
+
+
+    </form>
+    <!-- create_normal.html :: part 4 -->
+{% endblock %}

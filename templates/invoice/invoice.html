@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{%  block content %}
+{% load static %}
+{% load staticfiles %}
+<a href="{% url 'generate_pdf' invoice.id %}"><button class="btn btn-primary">生成PDF</button></a>
+{% if user.is_superuser %}<a href="{% url 'update_invoice' invoice.id %}"><button class="btn btn-warning">编辑</button></a>{%  endif %}
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="7">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <p class="logo-background">Huanglong Electronics Co. Ltd.</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: end">
+                            Invoice #: {{ invoice.invoice_no }}<br>
+                            Created: {{ invoice.date }}<br>
+                            Due: 30 days<br>
+                            Title: {{ invoice.title }}<br>{% if invoice.commercial %}
+                            Country of origin : People's Republic of China<br>
+                            INCOTERMS ：EXW {% endif %}
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="information">
+            <td colspan="7">
+                <table>
+                    <tr>
+                        <td>
+                            Dongguan City Huanglong Electronics Co. Ltd. <br>
+                            Building No. 4, Jingsheng Street<br>
+                            Niushan Foreign Economic Industrial Park<br>
+                            Dongcheng District, Dongguan City<br>
+                            Front desk tel.：0769-28337752<br>
+                            Postal code : 523000<br>
+                            Agricultural Bank of China<br>
+                            EUR: 44274838040000020 <br>
+                            USD: 44274814040000229<br>
+                            The Agricultural Bank of China<br>
+                            Guangdong Dongguan (sub)-branch
+
+
+
+                        </td>
+                        <td></td>
+                        <td></td>
+
+                        <td style="text-align: end;">
+                            Zortrax S.A.<br>
+                            ul. Lubelska 34<br>
+                            10-409 Olsztyn<br>
+                            Poland<br>
+                            NIP: PL7393864289<br>
+                            ING Bank Śląski S. A. PL50105017641000009030284286<br>
+                            SWIFT: INGBPLPW
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <th class="header" colspan="7"><h3>{{ invoice.invoice_no }}</h3></th>
+        <tr class="heading">
+            <td>Item</td>
+            <td>ERP no.</td>
+            <td>Quantity</td>
+            <td>Unit Price</td>
+            <td>Unit Price EUR</td>
+            <td>Total Price</td>
+            <td>Total Price EUR</td>
+        </tr>
+        {% for product in invoice.invoiceitem_set.all %}
+        <tr class="item">
+            <td>{{ product.product.product_name }}</td>
+            <td>{{ product.product.ERP_number }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>{{ product.product.price_pol }}</td>
+            <td>{% if product.product.price_pol_eur %}{{ product.product.price_pol_eur }}{% endif %}</td>
+            <td>{{ product.items_total }}</td>
+            <td>{{ product.items_total_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total USD: </b></td>
+            <td>
+               ${{ invoice.total }}
+            </td>
+        </tr>
+        <tr class="total">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total EUR: </b></td>
+            <td>
+               €{{ invoice.total_eur }}
+            </td>
+        </tr>
+    </table>
+</div>
+{% endblock %}

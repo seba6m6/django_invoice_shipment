@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4 offset-sm-4">
+            <form class="form-inline md-form form-sm" method="GET" action="">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="搜索发票 Find invoice" name="q" value="{{ request.GET.q }}"/>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <hr/>
+    <div class='row'>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">发票号 No.</th>
+                  <th scope="col">日期 Date</th>
+                  <th scope="col">总金额 Total USD</th>
+                  <th scope="col">付款 Paid</th>
+                  <th scope="col">开头 Title</th>
+                    <th scope="col">备注 Remarks</th>
+                  <th scope="col">付款证明 Pay. proof</th>
+                  <th scope="col">预付 Advance</th>
+                </tr>
+            </thead>
+            <tbody>
+                  {% for invoice in invoices %}
+                <tr {% if not invoice.paid and not invoice.partially_paid %}class="unpaid"{% endif %}
+                    {% if invoice.paid %}class="paid"{% endif %}
+                    {% if invoice.partially_paid %}class="partially-paid"{% endif %}>
+                  <th scope="row"></th>
+                  <td><a href="{% url 'invoice_detail' invoice.id %}">{{ invoice.invoice_no }}</a></td>
+                  <td>{{ invoice.date }}</td>
+                  <td>{{ invoice.total }}</td>
+                  <td>{% if invoice.paid %}付款了 PAID{% else %} 未付 NOT{% endif %}</td>
+                  <td>{% if invoice.title %}{{ invoice.title }}{% endif %}</td>
+                  <td>{% if invoice.remarks %}{{ invoice.remarks }}{% endif %}</td>
+                  <td>{% if invoice.proof %}<a href="{{ invoice.proof.url }}">
+                      全付款 FULL PAYMENT {% if invoice.proof_date %}-- 收款日期 {{ invoice.proof_date }}{% endif %}</a> {% endif %}</td>
+                  <td>{% if invoice.proof_partial %}<a href="{{ invoice.proof_partial.url }}">
+                      部分付款 PART PAID {% if invoice.proof_partial_date %} -- 收款日期 {{ invoice.proof_partial_date }}{% endif %} </a> {% endif %}</td>
+
+                </tr>
+                 {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <div class="col-sm-4 offset-sm-4" align="center">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if objects.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ objects.number }} of {{ objects.paginator.num_pages }}.
+                    </span>
+
+                    {% if objects.has_next %}
+                        <a href="?page={{ objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                        <a href="?page={{ objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+{% endblock content %}

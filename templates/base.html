@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    {% load group_tags %}
+    {% load staticfiles %}
+    {% load static i18n %}
+    {% load static %}
+        <title>Zortrax Warehouse</title>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+{#            <script src="/media/jquery.formset.js"></script>#}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+            <link href="{% static 'photo/style.css' %}" rel="stylesheet" type="text/css"/>
+
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navigation-bar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'photo:main' %}"><img src="{% static 'photo/images/logo.png' %}" style="height: 35px; width:118px" id="logo"></a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#topNavBar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+
+                <div class="collapse navbar-collapse" id="topNavBar">
+                    <ul class="navbar-nav mr-auto">
+                        {% if not request.user|has_group:"Polska" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:add_photo' %}"><span class="fas fa-camera-retro fa-lg"></span>&nbsp; 收货拍照</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:photos' %}"><span class="fas fa-book fa-lg"></span>&nbsp; 收货记录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:add_ship_photo' %}"><span class="fas fa-camera-retro fa-lg"></span>&nbsp; 发货拍照</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:ship_photos' %}"><span class="fas fa-book fa-lg"></span>&nbsp; 发货记录/Ship Records</a>
+                        </li>
+                        {% if user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:add_product' %}"><span class="fas fa-plus-square fa-lg"></span>&nbsp; 新建产品</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser or request.user|has_group:"Zakupy" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'photo:products' %}"><span class="fa fa-cog fa-lg"></span>&nbsp; Products/产品</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser or request.user|has_group:"Wysylki" %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href ="#" id="navbardrop"  data-toggle="dropdown" ><span class="fa fa-truck"></span>&nbsp; 发货/Shipments</a>
+                            <div class="dropdown-menu">
+                                {% if user.is_superuser or request.user|has_group:"Wysylanie" %}
+                                <a class="nav-link" href="{% url 'ship_items' %}">
+                                  <span class="fas fa-shipping-fast"></span>&nbsp; 发货/SHIP
+                                </a>
+                                {% endif %}
+                                <a class="nav-link" href="{% url 'items_to_send' %}">
+                                  <span class="fa fa-dolly-flatbed" aria-hidden="true"></span>&nbsp; 可发货的产品/TO SEND
+                                </a>
+                                <a class="nav-link" href="{% url 'items_sent' %}">
+                                  <span class="fa fa-check-circle " aria-hidden="true"></span>&nbsp; 全部发货的/SHIP_COMPLETE
+                                </a>
+                                <a class="nav-link" href="{% url 'shipment_lists' %}">
+                                  <span class="fa fa-check-circle " aria-hidden="true"></span>&nbsp; 发货清单/SHIPLIST
+                                </a>
+                            </div>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser or request.user|has_group:"Faktury" %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href ="#" id="navbardrop"  data-toggle="dropdown" ><span class="fas fa-file-invoice-dollar"></span>&nbsp; Invoice发票</a>
+                            <div class="dropdown-menu">
+                                {% if user.is_superuser %}
+                                <a class="nav-link" href="{% url 'create_invoice' %}">
+                                  <span class="fa fa-pen-alt" aria-hidden="true"></span>&nbsp; 开发票/NEW
+                                </a>
+                                {% endif %}
+                                <a class="nav-link" href="{% url 'invoice_list' %}">
+                                  <span class="fa fa-clipboard-list" aria-hidden="true"></span>&nbsp; 所有/ALL
+                                </a>
+                                <a class="nav-link" href="{% url 'batch_invoice_list' %}">
+                                  <span class="fa fa-boxes " aria-hidden="true"></span>&nbsp; 批次/BATCH
+                                </a>
+                                <a class="nav-link" href="{% url 'unpaid_invoice_list' %}">
+                                  <span class="fa fa-times-circle" aria-hidden="true"></span>&nbsp; 未付/NOT PAID
+                                </a>
+                                <a class="nav-link" href="{% url 'partially_paid_invoice_list' %}">
+                                  <span class="fas fa-hourglass-half" aria-hidden="true"></span>&nbsp; 付了部分/PART_PAID
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">
+                        </li>
+                        {% endif %}
+
+                    <ul class="navbar-nav navbar-right">
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}"><span class="fas fa-sign-in-alt fa-lg"></span>&nbsp; 登录/Log in</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                         <p class="nav-link"> Welcome {{ request.user.username }}</p>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:{document.getElementById('logout').submit()}" onclick=""><span class="fas fa-sign-out-alt fa-lg"></span>&nbsp; 退出/Logout</a>
+                            <form id="logout" method="POST" action="{% url 'accounts:logout' %}">
+                                {% csrf_token %}
+                                <input type="hidden"/>
+                            </form>
+                        </li>
+                         {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="jumbotron">
+                        <h3>东莞市皇龙有限公司</h3>
+                    </div>
+                </div>
+            </div>
+
+                {% if error %}
+                    <form class="form-group">
+                        <p> {{ error }}</p>
+                    </form>
+                {% endif %}
+                {% block content %}
+                {% endblock %}
+
+
+        </div>
+    </body>
+</html>

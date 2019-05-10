@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+        <div class="row">
+            <div class="col-sm-4 offset-sm-4">
+                <form class="form-inline md-form form-sm" method="GET" action="">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Wyszukaj po numerze zamówienia lub tracking no. 用订单或运单号查" name="q" value="{{ request.GET.q }}"/>
+                </form>
+            </div>
+        </div>
+        <br/>
+        <hr/>
+        <div class="row">
+        {% for shipphoto in objects %}
+            <div class="col-md-4">
+                <figure class="figure">
+                    {% if shipphoto.照片photo %} <img class="figure-img img-fluid rounded" src="{{ shipphoto.照片photo.url }}"><br>{% endif %}
+                    <ul class="list-group">
+                        <li id="photo_name" class="list-group-item list-group-item-dark">Order/订单 :&emsp;<b>{{ shipphoto.订单order|truncatechars:12 }}</b></li>
+                        <li class="list-group-item list-group-item-info">Date/日期:&emsp;<b>{{ shipphoto.date }}</b></li>
+                        <li class="list-group-item list-group-item-info">Updated/最近更新 :&emsp;<b>{{ shipphoto.update }}</b></li>
+                        <li class="list-group-item list-group-item-info">Quantity/数量:&emsp;<b>{{ shipphoto.数量quantity }}</b></li>
+                        <li class="list-group-item list-group-item-info">发货明细 /Shipping list&emsp;{% if shipphoto.发货名细xlsx %}<b><a href="{{ shipphoto.发货名细xlsx.url }}">{{ shipphoto.发货名细xlsx|truncatechars:12 }}</a></b>{% endif %}</li>
+                        <li class="list-group-item list-group-item-info">发货成本/Transport Costs:&emsp;{% if shipphoto.发货成本transcosts %}<b><a href="{{ shipphoto.发货成本transcosts.url }}">Transport Costs&emsp;</a></b>{% endif %}</li>
+                        <li class="list-group-item list-group-item-info">运单号/tracking:&emsp;<b>{{ shipphoto.运单号tracking }}</b></li>
+                        <li class="list-group-item list-group-item-info">发票/invoice:&emsp;{% if shipphoto.发票invoice %}<b><a href="{{ shipphoto.发票invoice.url }}">invoice&emsp;</a></b>{% endif %}</li>
+                        <li  class="list-group-item list-group-item-info">Car plates/车牌 :&emsp;<b>{{ shipphoto.车牌carplates }}</b></li>
+                        <li class="list-group-item list-group-item-info">User/上传用户:&emsp;<b>{{ shipphoto.user_name}}</b></li>
+                    </ul>
+                </figure>
+                <br/>
+                    {% if user.is_superuser or request.user.username == "ayan" %}
+                        <a href="{% url 'photo:update_ship_photo' shipphoto.id %}">
+                            <button class="btn btn-primary btn-lg">
+                                <span class="fas fa-edit"></span>
+                            </button>
+                        </a>
+                        <form id="ship-photo-delete" action="{% url 'photo:delete_ship_photo' shipphoto.id %}" method="post" style="display: inline">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ shipphoto.id }}"/>
+                        <button class="btn btn-danger btn-lg" onClick="deleteFunction()">
+                            <span class="fas fa-trash-alt"></span>
+                        </button>
+                    {% endif %}
+                    </form>
+                    <script>
+
+                        function deleteFunction(e) {
+                            if(!confirm("确定要删除这张照片吗 Are you sure you want to delete?")){
+                                $('#ship-photo-delete').submit();}
+                                else{}
+
+                        }
+                    </script>
+                        <p><a href="{% url 'photo:ship_photo_detail' shipphoto.id %}" class="btn btn-primary" role="button">细节/Details</a></p>
+            </div>
+
+        {%  endfor %}
+        </div>
+        <div class="row">
+            <div class="col-sm-4 offset-sm-4" align="center">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if objects.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ objects.number }} of {{ objects.paginator.num_pages }}.
+                        </span>
+
+                        {% if objects.has_next %}
+                            <a href="?page={{ objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                            <a href="?page={{ objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+{% endblock %}
